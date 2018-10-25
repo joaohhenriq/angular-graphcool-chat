@@ -1,3 +1,4 @@
+import { ApolloConfigModule } from './apollo-config.module';
 import { NgModule } from '@angular/core';
 import {MatToolbarModule, MatListModule} from '@angular/material';
 
@@ -14,6 +15,7 @@ import {HttpClientModule} from '@angular/common/http';
   imports: [
     AppRoutingModule,
     BrowserAnimationsModule,
+    ApolloConfigModule,
     HttpClientModule,
     MatToolbarModule,
     MatListModule
