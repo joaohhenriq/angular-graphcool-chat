@@ -8,11 +8,11 @@ import gql from 'graphql-tag';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  private apiUrl = 'https://api.graph.cool/simple/v1/cjniussik5sar0177vc58th1h';
   constructor(
     private apollo: Apollo
   ) {
     this.allUser();
+    this.createUser();
   }
 
   allUser(): void {
@@ -30,8 +30,8 @@ export class AppComponent {
   }
 
   createUser(): void {
-    const body = {
-      query: `
+    this.apollo.mutate({
+      mutation: gql`
         mutation CreateNewUser(
           $name: String!,
           $email: String!,
@@ -45,11 +45,10 @@ export class AppComponent {
         }
       `,
       variables: {
-        name: 'teste',
-        email: 'teste@teste.com',
+        name: 'bbb',
+        email: 'bbb@bbb.com',
         password: '123456'
       }
-    };
-
+    }).subscribe(res => console.log('Mutation: ', res));
   }
 }
