@@ -12,7 +12,7 @@ export class AppComponent {
     private apollo: Apollo
   ) {
     this.allUser();
-    //this.createUser();
+    // this.createUser();
   }
 
   allUser(): void {
