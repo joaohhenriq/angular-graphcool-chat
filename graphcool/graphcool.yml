@@ -49,6 +49,8 @@ functions:
 # Read more here:
 # https://www.graph.cool/docs/reference/auth/authorization/overview-iegoo0heez
 permissions:
+
+  # User
   - operation: User.read
     fields: [id, password]
   - operation: User.create
@@ -61,6 +63,15 @@ permissions:
   - operation: User.delete
     authenticated: true
 
+  # Chat
+  - operation: Chat.read
+    authenticated: true
+  - operation: Chat.create
+    authenticated: true
+  - operation: Chat.update
+    authenticated: true
+  - operation: Chat.delete
+    authenticated: true
 
 
 # Your root tokens used for functions to get full access to the API
