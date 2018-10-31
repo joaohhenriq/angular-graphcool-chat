@@ -73,6 +73,16 @@ permissions:
   - operation: Chat.delete
     authenticated: true
 
+  # Message
+  - operation: Message.read
+    authenticated: true
+  - operation: Message.create
+    authenticated: true
+  - operation: Message.update
+    authenticated: true
+  - operation: Message.delete
+    authenticated: true
+
 
 # Your root tokens used for functions to get full access to the API
 # Read more here:
