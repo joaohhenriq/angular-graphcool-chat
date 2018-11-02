@@ -6,14 +6,14 @@
     </mat-card-title>
 
     <mat-card-content>
-      <form>
+      <form (submit)="onSubmit()" [formGroup]="loginForm">
 
         <mat-form-field>
-          <input matInput type="email" placeholder="Email">
+          <input matInput type="email" formControlName="email" placeholder="Email">
         </mat-form-field>
 
         <mat-form-field>
-          <input matInput type="password" placeholder="Password">
+          <input matInput type="password" formControlName="password" placeholder="Password">
         </mat-form-field>
 
         <button type="submit" mat-button color="primary">Sign In</button>
