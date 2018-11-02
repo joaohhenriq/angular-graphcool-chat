@@ -93,6 +93,29 @@ permissions:
   - operation: File.delete
     authenticated: true
 
+  # Relations
+  - operation: UserOnChats.connect
+    authenticated: true
+  - operation: UserOnChats.disconnect
+    authenticated: true
+
+  - operation: MessagesOnChat.connect
+    authenticated: true
+  - operation: MessagesOnUSer.connect
+    authenticated: true
+
+  - operation: UserPhoto.connect
+    authenticated: true
+  - operation: UserPhoto.disconnect
+    authenticated: true
+
+  - operation: ChatPhoto.connect
+    authenticated: true
+  - operation: ChatPhoto.disconnect
+    authenticated: true
+
+
+
 
 # Your root tokens used for functions to get full access to the API
 # Read more here:
