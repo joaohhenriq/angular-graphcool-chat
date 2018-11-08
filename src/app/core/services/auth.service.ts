@@ -11,10 +11,7 @@ export class AuthService {
 
   constructor(
     private apollo: Apollo
-  ) {
-    this.signupUser({name: 'juao', email: 'juao@hotmail.com', password: '123456'})
-      .subscribe(res => console.log('SignUpUser', res));
-  }
+  ) { }
 
   signinUser(variables: {email: string, password: string}): Observable<{id: string, token: string}> {
     return this.apollo.mutate({
