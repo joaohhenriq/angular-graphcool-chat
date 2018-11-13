@@ -3,6 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { takeWhile } from 'rxjs/operators';
 import { ErrorService } from 'src/app/core/services/error.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private errorService: ErrorService
+    private errorService: ErrorService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -55,7 +57,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           console.log('redirecting...', res);
         },
         err => {
-          console.log(this.errorService.getErrorMessage(err));
+          console.log(err);
+          this.snackBar.open(this.errorService.getErrorMessage(err), 'Done', {duration: 5000, verticalPosition: 'bottom'});
         },
         () => console.log('Observable completed!')
     );
