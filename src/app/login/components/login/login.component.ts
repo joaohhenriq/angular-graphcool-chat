@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { takeWhile } from 'rxjs/operators';
 import { ErrorService } from 'src/app/core/services/error.service';
 import { MatSnackBar } from '@angular/material';
+import { runInThisContext } from 'vm';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   configs = {
     isLogin: true,
     actionText: 'Sign In',
-    buttonActionText: 'Create account'
+    buttonActionText: 'Create account',
+    isLoading: false
   };
   private nameControl = new FormControl('', [Validators.required, Validators.minLength(5)]);
 
@@ -42,6 +44,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     console.log(this.loginForm.value);
+
+    this.configs.isLoading = true;
 
     const operation =
       (this.configs.isLogin)
