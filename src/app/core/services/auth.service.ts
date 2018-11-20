@@ -1,24 +1,33 @@
 import { AUTHENTICATE_USER_MUTATION, SIGNUP_USER_MUTATION } from './auth.graphql';
 import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, ReplaySubject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
+  private _isAuthenticated = new ReplaySubject<boolean>(1);
+
   constructor(
     private apollo: Apollo
-  ) { }
+  ) {
+    this.isAuthenticated.subscribe(is => console.log('AuthState', is));
+  }
+
+  get isAuthenticated(): Observable<boolean> {
+    return this._isAuthenticated.asObservable();
+  }
 
   signinUser(variables: {email: string, password: string}): Observable<{id: string, token: string}> {
     return this.apollo.mutate({
       mutation: AUTHENTICATE_USER_MUTATION,
       variables: variables
     }).pipe(
-      map(res => res.data.authenticateUser)
+      map(res => res.data.authenticateUser),
+      tap(res => this.setAuthState(res !== null))
     );
   }
 
@@ -27,7 +36,12 @@ export class AuthService {
       mutation: SIGNUP_USER_MUTATION,
       variables: variables
     }).pipe(
-      map(res => res.data.signupUser)
+      map(res => res.data.signupUser),
+      tap(res => this.setAuthState(res !== null))
     );
+  }
+
+  private setAuthState(isAuthenticated: boolean): void {
+    this._isAuthenticated.next(isAuthenticated);
   }
 }
