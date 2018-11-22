@@ -59,6 +59,9 @@ export class LoginComponent implements OnInit, OnDestroy {
       .subscribe(
         res => {
           console.log('redirecting...', res);
+          const redirect: string = this.authService.redirectUrl || '/dashboard';
+          console.log('route ro redirect: ', redirect);
+          this.authService.redirectUrl = null;
           this.configs.isLoading = false;
         },
         err => {
