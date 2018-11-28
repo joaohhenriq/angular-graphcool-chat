@@ -19,10 +19,6 @@ export class AuthService {
   ) {
     this.isAuthenticated.subscribe(is => console.log('AuthState', is));
     this.init();
-
-    console.log('keep', this.keepSigned);
-    this.toggleKeepSigned();
-    console.log('keep', this.keepSigned);
   }
 
   init(): void {

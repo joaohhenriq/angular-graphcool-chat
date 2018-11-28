@@ -6,7 +6,8 @@ import { MatCardModule,
          MatFormFieldModule,
          MatInputModule,
          MatButtonModule,
-         MatSnackBarModule } from '@angular/material';
+         MatSnackBarModule,
+         MatSlideToggleModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
@@ -19,7 +20,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatButtonModule,
     ReactiveFormsModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatSlideToggleModule
   ]
 })
 export class SharedModule { }

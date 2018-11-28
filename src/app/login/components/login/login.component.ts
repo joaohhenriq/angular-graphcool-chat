@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     private formBuilder: FormBuilder,
-    private authService: AuthService,
+    public authService: AuthService,
     private errorService: ErrorService,
     private snackBar: MatSnackBar
   ) { }
@@ -84,6 +84,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   get name(): FormControl { return <FormControl>this.loginForm.get('name'); }
   get email(): FormControl { return <FormControl>this.loginForm.get('email'); }
   get password(): FormControl { return <FormControl>this.loginForm.get('password'); }
+
+  onKeepSigned(): void {
+    this.authService.toggleKeepSigned();
+  }
 
   ngOnDestroy(): void {
     this.alive = false;
