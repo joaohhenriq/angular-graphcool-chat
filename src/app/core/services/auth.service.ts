@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { StorageKeys } from './../../storage-keys';
 import { AUTHENTICATE_USER_MUTATION, SIGNUP_USER_MUTATION, LoggedInUserQuery, LOGGED_IN_USER_QUERY } from './auth.graphql';
 import { Apollo } from 'apollo-angular';
@@ -15,7 +16,8 @@ export class AuthService {
   private _isAuthenticated = new ReplaySubject<boolean>(1);
 
   constructor(
-    private apollo: Apollo
+    private apollo: Apollo,
+    private router: Router
   ) {
     this.isAuthenticated.subscribe(is => console.log('AuthState', is));
     this.init();
@@ -60,6 +62,15 @@ export class AuthService {
   toggleKeepSigned(): void {
     this.keepSigned = !this.keepSigned;
     window.localStorage.setItem(StorageKeys.KEEP_SIGNED, this.keepSigned.toString());
+  }
+
+  logout(): void {
+    window.localStorage.removeItem(StorageKeys.AUTH_TOKEN);
+    window.localStorage.removeItem(StorageKeys.KEEP_SIGNED);
+    this.keepSigned = false;
+    this._isAuthenticated.next(false);
+    this.router.navigate(['/login']);
+    this.apollo.getClient().resetStore();
   }
 
   autoLogin(): Observable<void> {
