@@ -26,15 +26,12 @@ export class ApolloConfigModule {
     const authMiddleware: ApolloLink = new ApolloLink(
       (operation, forward) => {
 
-        console.log('Context: ', operation.getContext());
-
         operation.setContext({
           headers: new HttpHeaders({
             'Authorization': `Bearer ${this.getAuthToken()}`
           })
         });
 
-        console.log('Context: ', operation.getContext());
         return forward(operation);
       }
     );

@@ -2,8 +2,8 @@ import { StorageKeys } from './../../storage-keys';
 import { AUTHENTICATE_USER_MUTATION, SIGNUP_USER_MUTATION, LoggedInUserQuery, LOGGED_IN_USER_QUERY } from './auth.graphql';
 import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
-import { Observable, ReplaySubject, throwError } from 'rxjs';
-import { map, tap, catchError } from 'rxjs/operators';
+import { Observable, ReplaySubject, throwError, of } from 'rxjs';
+import { map, tap, catchError, mergeMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -19,12 +19,6 @@ export class AuthService {
   ) {
     this.isAuthenticated.subscribe(is => console.log('AuthState', is));
     this.init();
-
-    this.validateToken()
-      .subscribe(
-        res => console.log('Res:', res),
-        err => console.log('Err:', err)
-      );
   }
 
   init(): void {
@@ -66,6 +60,23 @@ export class AuthService {
   toggleKeepSigned(): void {
     this.keepSigned = !this.keepSigned;
     window.localStorage.setItem(StorageKeys.KEEP_SIGNED, this.keepSigned.toString());
+  }
+
+  autoLogin(): Observable<void> {
+    if (!this.keepSigned) {
+      this._isAuthenticated.next(false);
+      window.localStorage.removeItem(StorageKeys.AUTH_TOKEN);
+      return of();
+    }
+
+    return this.validateToken()
+      .pipe(
+        tap(authData => {
+          const token = window.localStorage.getItem(StorageKeys.AUTH_TOKEN);
+          this.setAuthState({token, isAuthenticated: authData.isAuthenticated});
+        }),
+        mergeMap(res => of())
+      );
   }
 
   private validateToken(): Observable<{id: string, isAuthenticated: boolean}> {
