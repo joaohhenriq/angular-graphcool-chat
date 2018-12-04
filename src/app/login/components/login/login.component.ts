@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { AuthService } from './../../../core/services/auth.service';
 import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
@@ -28,7 +29,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     public authService: AuthService,
     private errorService: ErrorService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -64,10 +66,10 @@ export class LoginComponent implements OnInit, OnDestroy {
       )
       .subscribe(
         res => {
-          console.log('redirecting...', res);
           this.authService.setRemeberMe(this.loginForm.value);
           const redirect: string = this.authService.redirectUrl || '/dashboard';
-          console.log('route ro redirect: ', redirect);
+          console.log('redirecting...', redirect);
+          this.router.navigate([redirect]);
           this.authService.redirectUrl = null;
           this.configs.isLoading = false;
         },
