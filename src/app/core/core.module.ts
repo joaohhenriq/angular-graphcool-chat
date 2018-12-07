@@ -7,6 +7,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   exports: [
     BrowserAnimationsModule,
     ApolloConfigModule
+  ],
+  providers: [
+    Title
   ]
 })
 export class CoreModule {
