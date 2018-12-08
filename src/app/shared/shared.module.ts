@@ -10,7 +10,8 @@ import { MatCardModule,
          MatSlideToggleModule,
          MatListModule,
          MatIconModule,
-         MatLineModule} from '@angular/material';
+         MatLineModule,
+         MatSidenavModule} from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
@@ -23,6 +24,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatIconModule,
     MatLineModule,
     MatInputModule,
+    MatSidenavModule,
     MatButtonModule,
     ReactiveFormsModule,
     MatSnackBarModule,
