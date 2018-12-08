@@ -78,14 +78,3 @@ npm install
 ng serve -o
 ```
 *É necessário ter o [Angular CLI](https://github.com/angular/angular-cli) instalado para rodar o comando acima*
-
-## Contato
-
-Desenvolvido por: [Plínio Naves](https://www.udemy.com/user/plinio-naves/)
-
-* Email: [pliniopjn@hotmail.com](mailto:pliniopjn@hotmail.com)
-* Twitter: [@plinionaves](https://twitter.com/plinionaves)
-* Github: [github.com/plinionaves](https://github.com/plinionaves)
-* Linkedin: [linkedin.com/in/plinionaves/](https://www.linkedin.com/in/plinionaves/)
-
-Participe do nosso grupo no Facebook: [Cursos Plínio Naves](https://www.facebook.com/groups/200267383740594)
