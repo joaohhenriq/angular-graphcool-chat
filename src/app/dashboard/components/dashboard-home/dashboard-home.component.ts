@@ -1,3 +1,5 @@
+import { AuthService } from './../../../core/services/auth.service';
+import { MatSidenav } from '@angular/material';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -5,11 +7,15 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './dashboard-home.component.html',
   styleUrls: ['./dashboard-home.component.scss']
 })
-export class DashboardHomeComponent implements OnInit {
+export class DashboardHomeComponent {
 
-  constructor() { }
+  constructor(
+    private authService: AuthService
+  ) { }
 
-  ngOnInit() {
+  onLogout(sidenav: MatSidenav): void {
+    sidenav.close()
+      .then(() => this.authService.logout());
   }
 
 }
