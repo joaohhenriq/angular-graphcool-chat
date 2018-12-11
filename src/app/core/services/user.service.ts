@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { variable } from '@angular/compiler/src/output/output_ast';
 
 @Injectable({
   providedIn: 'root'
@@ -14,10 +15,13 @@ export class UserService {
     private apollo: Apollo
   ) { }
 
-  allUsers(): Observable<User[]> {
+  allUsers(idToExclude: string): Observable<User[]> {
     return this.apollo
       .query<AllUsersQuery>({
-        query: ALL_USERS_QUERY
+        query: ALL_USERS_QUERY,
+        variables: {
+          idToExclude
+        }
       }).pipe(
         map(res => res.data.allUsers)
       );

@@ -1,3 +1,4 @@
+import { AuthService } from './../../../core/services/auth.service';
 import { UserService } from './../../../core/services/user.service';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -13,11 +14,12 @@ export class ChatUsersComponent implements OnInit {
   users$: Observable<User[]>;
 
   constructor(
-    private userService: UserService
+    private userService: UserService,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
-    this.users$ = this.userService.allUsers();
+    this.users$ = this.userService.allUsers(this.authService.authUser.id);
   }
 
 }
