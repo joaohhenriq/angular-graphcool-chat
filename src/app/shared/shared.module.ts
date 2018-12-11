@@ -14,8 +14,12 @@ import { MatCardModule,
          MatSidenavModule,
          MatTabsModule} from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
+import { NoRecordComponent } from './components/no-record/no-record.component';
 
 @NgModule({
+  imports: [
+    MatIconModule
+  ],
   exports: [
     CommonModule,
     MatCardModule,
@@ -31,7 +35,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatSnackBarModule,
     MatTabsModule,
     MatProgressSpinnerModule,
-    MatSlideToggleModule
-  ]
+    MatSlideToggleModule,
+    NoRecordComponent
+  ],
+  declarations: [NoRecordComponent]
 })
 export class SharedModule { }
