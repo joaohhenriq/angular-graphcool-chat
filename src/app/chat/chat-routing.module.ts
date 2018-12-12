@@ -1,3 +1,4 @@
+import { ChatWindowComponent } from './components/chat-window/chat-window.component';
 import { ChatListComponent } from './components/chat-list/chat-list.component';
 import { ChatUsersComponent } from './components/chat-users/chat-users.component';
 import { AuthGuard } from './../login/auth.guard';
@@ -15,6 +16,9 @@ const routes: Routes = [
       { path: 'users', component: ChatUsersComponent },
       { path: '', component: ChatListComponent }
     ]
+  },
+  {
+    path: ':id', component: ChatWindowComponent, canActivate: [AuthGuard]
   }
 ];
 
