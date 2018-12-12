@@ -6,11 +6,11 @@ export interface AllChatsQuery {
 }
 
 export const USER_CHATS_QUERY = gql`
-  query UserChatsQuery($user_id: ID!){
+  query UserChatsQuery($userId: ID!){
     allChats(
       filter: {
         users_some: {
-          id: $user_id
+          id: $userId
         }
       }
     ) {
@@ -21,7 +21,7 @@ export const USER_CHATS_QUERY = gql`
       users(
         first: 1,
         filter: {
-          id_not: $user_id
+          id_not: $userId
         }
       ) {
         id
