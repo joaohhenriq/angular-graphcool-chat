@@ -1,15 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { map } from 'rxjs/operators';
+import { Chat } from './../../models/chat.model';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-chat-window',
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.scss']
 })
-export class ChatWindowComponent implements OnInit {
+export class ChatWindowComponent implements OnInit, OnDestroy {
 
-  constructor() { }
+  chat: Chat;
+  private subscriptions: Subscription[] = [];
 
-  ngOnInit() {
+  constructor(
+    private route: ActivatedRoute
+  ) { }
+
+  ngOnInit(): void {
+    this.subscriptions.push(
+      this.route.data
+        .pipe(
+          map(routeData => this.chat = routeData.chat)
+        )
+        .subscribe(chat => console.log('Chat: ', chat))
+    );
   }
 
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
+  }
 }
