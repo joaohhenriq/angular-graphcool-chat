@@ -1,3 +1,4 @@
+import { MessageService } from './../../services/message.service';
 import { User } from './../../../core/models/user.model';
 import { UserService } from './../../../core/services/user.service';
 import { Title } from '@angular/platform-browser';
@@ -5,7 +6,8 @@ import { map, mergeMap, tap, take } from 'rxjs/operators';
 import { Chat } from './../../models/chat.model';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
+import { Message } from '../../models/message.model';
 
 @Component({
   selector: 'app-chat-window',
@@ -15,13 +17,15 @@ import { Subscription } from 'rxjs';
 export class ChatWindowComponent implements OnInit, OnDestroy {
 
   chat: Chat;
+  messages$: Observable<Message[]>;
   recipientId: string = null;
   private subscriptions: Subscription[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private title: Title,
-    private userService: UserService
+    private userService: UserService,
+    private messageService: MessageService
   ) { }
 
   ngOnInit(): void {
@@ -41,6 +45,7 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
                 .subscribe((user: User) => this.title.setTitle(user.name));
             } else { // quando já tem o chat
               this.title.setTitle(this.chat.title || this.chat.users[0].name);
+              this.messages$ = this.messageService.getChatMessages(this.chat.id);
             }
           })
         )
