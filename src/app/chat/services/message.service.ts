@@ -1,4 +1,4 @@
-import { AllMessagesQuery, GET_CHAT_MESSAGES_QUERY } from './message.graphql';
+import { AllMessagesQuery, GET_CHAT_MESSAGES_QUERY, CREATE_MESSAGE_MUTATION } from './message.graphql';
 import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -20,6 +20,15 @@ export class MessageService {
       variables: { chatId }
     }).pipe(
       map(res => res.data.allMessages)
+    );
+  }
+
+  createMessage(message: {text: string, chatId: string, senderId: string}): Observable<Message> {
+    return this.apollo.mutate({
+      mutation: CREATE_MESSAGE_MUTATION,
+      variables: message
+    }).pipe(
+      map(res => res.data.createMessage)
     );
   }
 }
