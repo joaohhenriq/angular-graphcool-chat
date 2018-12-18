@@ -38,6 +38,7 @@ export const USER_CHATS_QUERY = gql`
       ) {
         id
         text
+        createdAt
         sender {
           id
           name
@@ -125,6 +126,7 @@ export const CREATE_PRIVATE_CHAT_MUTATION = gql`
       ) {
         id
         text
+        createdAt
         sender {
           id
           name
