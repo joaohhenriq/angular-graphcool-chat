@@ -8,7 +8,7 @@ import { map, mergeMap, tap, take } from 'rxjs/operators';
 import { Chat } from './../../models/chat.model';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Subscription, Observable } from 'rxjs';
+import { Subscription, Observable, of } from 'rxjs';
 import { Message } from '../../models/message.model';
 
 @Component({
@@ -48,6 +48,9 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
               this.userService.getUserById(this.recipientId)
                 .pipe(take(1))
                 .subscribe((user: User) => this.title.setTitle(user.name));
+
+              this.messages$ = of([]);
+
             } else { // quando já tem o chat
               this.title.setTitle(this.chat.title || this.chat.users[0].name);
               this.messages$ = this.messageService.getChatMessages(this.chat.id);
