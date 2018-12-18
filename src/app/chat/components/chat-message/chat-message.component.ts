@@ -15,7 +15,7 @@ export class ChatMessageComponent implements OnInit {
   ngOnInit(): void {
     this.arrowClass = {
       'arrow-left': !this.isFromSender,
-      'arrow-right': !this.isFromSender
+      'arrow-right': this.isFromSender
     };
   }
 
