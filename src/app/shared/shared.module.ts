@@ -19,7 +19,8 @@ import { AvatarComponent } from './components/avatar/avatar.component';
 
 @NgModule({
   imports: [
-    MatIconModule
+    MatIconModule,
+    CommonModule
   ],
   exports: [
     CommonModule,
