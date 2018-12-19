@@ -1,3 +1,4 @@
+import { AppConfigService } from './core/services/app-config.service';
 import { AuthService } from './core/services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { take } from 'rxjs/operators';
@@ -15,7 +16,8 @@ export class AppComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private errorService: ErrorService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private appConfig: AppConfigService
   ) {}
 
   ngOnInit(): void {

@@ -1,3 +1,4 @@
+import { AppConfigService } from './../../core/services/app-config.service';
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
@@ -5,8 +6,14 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class FromNowPipe implements PipeTransform {
 
+  constructor(
+    private appConfig: AppConfigService
+  ) {
+
+  }
+
   transform(date: string): string {
-    return timeDifferenceForDate(date);
+    return timeDifferenceForDate(date, this.appConfig.timeDifference);
   }
 
 }
@@ -39,8 +46,8 @@ function getTimeDifference(current: number, previous: number) {
   }
 }
 
-function timeDifferenceForDate(date: string) {
-  const now = new Date().getTime();
+function timeDifferenceForDate(date: string, timeDifference: number) {
+  const now = new Date().getTime() + timeDifference;
   const updated = new Date(date).getTime();
   return getTimeDifference(now, updated);
 }
