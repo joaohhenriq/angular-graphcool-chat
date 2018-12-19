@@ -1,3 +1,4 @@
+import { BaseComponent } from './../../../shared/components/base.component';
 import { ChatService } from './../../services/chat.service';
 import { AuthService } from './../../../core/services/auth.service';
 import { MessageService } from './../../services/message.service';
@@ -16,7 +17,7 @@ import { Message } from '../../models/message.model';
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.scss']
 })
-export class ChatWindowComponent implements OnInit, OnDestroy {
+export class ChatWindowComponent extends BaseComponent<Message> implements OnInit, OnDestroy {
 
   chat: Chat;
   messages$: Observable<Message[]>;
@@ -31,7 +32,9 @@ export class ChatWindowComponent implements OnInit, OnDestroy {
     private messageService: MessageService,
     public authService: AuthService,
     private chatService: ChatService
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.title.setTitle('Loading...');
