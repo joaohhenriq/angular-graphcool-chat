@@ -19,27 +19,28 @@ export class ChatService {
   ) { }
 
   getUserChats(): Observable<Chat[]> {
-    return this.apollo.query<AllChatsQuery>({
+    return this.apollo.watchQuery<AllChatsQuery>({
       query: USER_CHATS_QUERY,
       variables: {
         loggedUserId: this.authService.authUser.id
       }
-    }).pipe(
-      map(res => res.data.allChats),
-      map((chats: Chat[]) => {
-        const chatsToSort = chats.slice();
-        return chatsToSort.sort((a, b) => {
-          const valueA = (a.messages.length > 0)
-            ? new Date(a.messages[0].createdAt).getTime()
-            : new Date(a.createdAt).getTime();
+    }).valueChanges
+      .pipe(
+        map(res => res.data.allChats),
+        map((chats: Chat[]) => {
+          const chatsToSort = chats.slice();
+          return chatsToSort.sort((a, b) => {
+            const valueA = (a.messages.length > 0)
+              ? new Date(a.messages[0].createdAt).getTime()
+              : new Date(a.createdAt).getTime();
 
-          const valueB = (b.messages.length > 0)
-            ? new Date(b.messages[0].createdAt).getTime()
-            : new Date(b.createdAt).getTime();
+            const valueB = (b.messages.length > 0)
+              ? new Date(b.messages[0].createdAt).getTime()
+              : new Date(b.createdAt).getTime();
 
-          return valueB - valueA;
-        });
-      })
+            return valueB - valueA;
+          });
+        })
     );
   }
 
@@ -64,6 +65,26 @@ export class ChatService {
         targetUserId
       },
       update: (store: DataProxy, {data: { createChat }}) => {
+
+        const userChatsVariables = { loggedUserId: this.authService.authUser.id };
+
+        // lendo query do cache do apollo
+        const userChatsData = store.readQuery<AllChatsQuery>({
+          query: USER_CHATS_QUERY,
+          variables: userChatsVariables
+        });
+
+        // alteramos os dados da query
+        userChatsData.allChats = [createChat, ...userChatsData.allChats];
+
+        // enviamos a query de volta para o cache
+        store.writeQuery({
+          query: USER_CHATS_QUERY,
+          variables: userChatsVariables,
+          data: userChatsData
+        });
+        // todas essa alterações serão observadas pela watchQuery configurada acima
+
         const variables = {
           chatId: targetUserId,
           loggedUserId: this.authService.authUser.id,
