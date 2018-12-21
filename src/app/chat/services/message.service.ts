@@ -51,6 +51,9 @@ export class MessageService {
         }
       },
       update: (store: DataProxy, {data: { createMessage }}) => {
+
+        try {
+
         const data = store.readQuery<AllMessagesQuery>({
           query: GET_CHAT_MESSAGES_QUERY,
           variables: { chatId: message.chatId }
@@ -64,6 +67,10 @@ export class MessageService {
           variables: { chatId: message.chatId },
           data: data
         });
+
+        } catch (e) {
+          console.log('allMessagesQuery not found!');
+        }
       }
     }).pipe(
       map(res => res.data.createMessage)
