@@ -1,4 +1,5 @@
-import { variable } from '@angular/compiler/src/output/output_ast';
+import { AuthService } from './../../core/services/auth.service';
+import { AllChatsQuery, USER_CHATS_QUERY } from './chat.graphql';
 import { AllMessagesQuery, GET_CHAT_MESSAGES_QUERY, CREATE_MESSAGE_MUTATION } from './message.graphql';
 import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
@@ -13,7 +14,8 @@ import { DataProxy } from 'apollo-cache';
 export class MessageService {
 
   constructor(
-    private apollo: Apollo
+    private apollo: Apollo,
+    private authService: AuthService
   ) { }
 
   getChatMessages(chatId: string): Observable<Message[]> {
@@ -54,23 +56,54 @@ export class MessageService {
 
         try {
 
-        const data = store.readQuery<AllMessagesQuery>({
-          query: GET_CHAT_MESSAGES_QUERY,
-          variables: { chatId: message.chatId }
-        });
+          const data = store.readQuery<AllMessagesQuery>({
+            query: GET_CHAT_MESSAGES_QUERY,
+            variables: { chatId: message.chatId }
+          });
 
-        // recurso spread, espalha os itens dos array em cada posição do novo array
-        data.allMessages = [...data.allMessages, createMessage]; // createMessage contém as propriedades da nova mensagem
+          // recurso spread, espalha os itens dos array em cada posição do novo array
+          data.allMessages = [...data.allMessages, createMessage]; // createMessage contém as propriedades da nova mensagem
 
-        store.writeQuery({
-          query: GET_CHAT_MESSAGES_QUERY,
-          variables: { chatId: message.chatId },
-          data: data
-        });
+          store.writeQuery({
+            query: GET_CHAT_MESSAGES_QUERY,
+            variables: { chatId: message.chatId },
+            data: data
+          });
 
         } catch (e) {
           console.log('allMessagesQuery not found!');
         }
+
+        try {
+          const userChatsVariables = { loggedUserId: this.authService.authUser.id };
+
+          const userChatsData = store.readQuery<AllChatsQuery>({
+            query: USER_CHATS_QUERY,
+            variables: userChatsVariables
+          });
+
+          const newUserChatsList = [...userChatsData.allChats];
+
+          newUserChatsList.map(c => {
+            if (c.id === createMessage.chat.id) {
+              c.messages = [createMessage];
+            }
+
+            return c;
+          });
+
+          userChatsData.allChats = newUserChatsList;
+
+          store.writeQuery({
+            query: USER_CHATS_QUERY,
+            variables: userChatsVariables,
+            data: userChatsData
+          });
+
+        } catch (e) {
+          console.log('allChatsQuery not found!');
+        }
+
       }
     }).pipe(
       map(res => res.data.createMessage)
