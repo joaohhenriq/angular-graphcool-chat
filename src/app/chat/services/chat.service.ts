@@ -1,14 +1,14 @@
+import { Chat } from './../models/chat.model';
+import { Message } from './../models/message.model';
 import { Router, RouterEvent, NavigationEnd } from '@angular/router';
 import { DataProxy } from 'apollo-cache';
-import { AllChatsQuery, USER_CHATS_QUERY, ChatQuery, CHAT_BY_ID_OR_BY_USERS_QUERY, CREATE_PRIVATE_CHAT_MUTATION } from './chat.graphql';
+import { AllChatsQuery, USER_CHATS_QUERY, ChatQuery, CHAT_BY_ID_OR_BY_USERS_QUERY, CREATE_PRIVATE_CHAT_MUTATION, USER_CHATS_SUBSCRIPTION } from './chat.graphql';
 import { AuthService } from './../../core/services/auth.service';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { Chat } from '../models/chat.model';
 import { map } from 'rxjs/operators';
 import { USER_MESSAGES_SUBSCRIPTION, AllMessagesQuery, GET_CHAT_MESSAGES_QUERY } from './message.graphql';
-import { Message } from '../models/message.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +42,24 @@ export class ChatService {
       query: USER_CHATS_QUERY,
       variables: {
         loggedUserId: this.authService.authUser.id
+      }
+    });
+
+    this.queryRef.subscribeToMore({
+      document: USER_CHATS_SUBSCRIPTION,
+      variables: { loggedUserId: this.authService.authUser.id },
+      updateQuery: (previous: AllChatsQuery, { subscriptionData }): AllChatsQuery => {
+
+        const newChat: Chat = subscriptionData.data.Chat.node; // captura novo chat criado para o usuário
+
+        if (previous.allChats.every(chat => chat.id !== newChat.id)) {
+          return {
+            ...previous,
+            allChats: [newChat, ...previous.allChats]
+          };
+        }
+
+        return previous;
       }
     });
 
