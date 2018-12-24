@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { Chat } from '../models/chat.model';
 import { map } from 'rxjs/operators';
-import { USER_MESSAGES_SUBSCRIPTION } from './message.graphql';
+import { USER_MESSAGES_SUBSCRIPTION, AllMessagesQuery, GET_CHAT_MESSAGES_QUERY } from './message.graphql';
 import { Message } from '../models/message.model';
 
 @Injectable({
@@ -26,13 +26,15 @@ export class ChatService {
   ) { }
 
   startChatsMonitoring(): void {
-    this.chats$ = this.getUserChats();
-    this.subscriptions.push(this.chats$.subscribe());
-    this.router.events.subscribe((event: RouterEvent) => {
-      if (event instanceof NavigationEnd && !this.router.url.includes('chat')) {
-        this.onDestroy();
-      }
-    });
+    if (!this.chats$) {
+      this.chats$ = this.getUserChats();
+      this.subscriptions.push(this.chats$.subscribe());
+      this.router.events.subscribe((event: RouterEvent) => {
+        if (event instanceof NavigationEnd && !this.router.url.includes('chat')) {
+          this.onDestroy();
+        }
+      });
+    }
   }
 
   getUserChats(): Observable<Chat[]> {
@@ -49,6 +51,31 @@ export class ChatService {
       updateQuery: (previous: AllChatsQuery, { subscriptionData }): AllChatsQuery => {
 
         const newMessage: Message = subscriptionData.data.Message.node;
+
+        try {
+          if (newMessage.sender.id !== this.authService.authUser.id) {
+
+            const apolloClient = this.apollo.getClient();
+
+            const chatMessagesVariables = { chatId: newMessage.chat.id };
+
+            const chatMessagesData = apolloClient.readQuery<AllMessagesQuery>({
+              query: GET_CHAT_MESSAGES_QUERY,
+              variables: chatMessagesVariables
+            });
+
+            chatMessagesData.allMessages = [...chatMessagesData.allMessages, newMessage];
+
+            apolloClient.writeQuery({
+              query: GET_CHAT_MESSAGES_QUERY,
+              variables: chatMessagesVariables,
+              data: chatMessagesData
+            });
+          }
+
+        } catch (e) {
+          console.log('AllMessagesQuery not found!');
+        }
 
         const chatToUpdateIndex: number =
           (previous.allChats)
