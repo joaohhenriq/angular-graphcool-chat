@@ -56,7 +56,9 @@ export class ApolloConfigModule {
       uri: this.graphcoolConfig.subscriptionsAPI,
       options: {
         reconnect: true,
-        timeout: 30000 // especificar o tempo que deve aguardar para uma conexão ou reconexão
+        timeout: 30000, // especificar o tempo que deve aguardar para uma conexão ou reconexão
+        connectionParams: () => ({'Authorization': `Bearer ${this.getAuthToken()}`})
+        // envolve com parenteses pra indicar que é o próprio retorno
       }
     });
 
