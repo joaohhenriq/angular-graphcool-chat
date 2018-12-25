@@ -1,3 +1,4 @@
+import { UserService } from './../../core/services/user.service';
 import { Chat } from './../models/chat.model';
 import { Message } from './../models/message.model';
 import { Router, RouterEvent, NavigationEnd } from '@angular/router';
@@ -22,7 +23,8 @@ export class ChatService {
   constructor(
     private apollo: Apollo,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) { }
 
   startChatsMonitoring(): void {
@@ -32,6 +34,7 @@ export class ChatService {
       this.router.events.subscribe((event: RouterEvent) => {
         if (event instanceof NavigationEnd && !this.router.url.includes('chat')) {
           this.onDestroy();
+          this.userService.stopUsersMonitoring();
         }
       });
     }

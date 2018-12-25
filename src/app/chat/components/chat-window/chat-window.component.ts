@@ -49,6 +49,7 @@ export class ChatWindowComponent extends BaseComponent<Message> implements OnIni
   }
 
   ngOnInit(): void {
+    this.userService.startUsersMonitoring(this.authService.authUser.id);
     this.chatService.startChatsMonitoring();
     this.title.setTitle('Loading...');
 

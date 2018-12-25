@@ -2,7 +2,7 @@ import { ALL_USERS_QUERY, AllUsersQuery, UserQuery, GET_USER_BY_ID_QUERY, NEW_US
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { User } from '../models/user.model';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable({
@@ -10,19 +10,39 @@ import { map } from 'rxjs/operators';
 })
 export class UserService {
 
+  users$: Observable<User[]>;
   private queryRef: QueryRef<AllUsersQuery>;
+  private userSubscription: Subscription;
 
   constructor(
     private apollo: Apollo
   ) { }
 
+  startUsersMonitoring(idToExclude: string): void {
+    if (!this.users$) {
+      this.users$ = this.allUsers(idToExclude);
+      this.userSubscription = this.users$.subscribe();
+    }
+  }
+
+  stopUsersMonitoring(): void {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+      this.userSubscription = null;
+      this.users$ = null;
+    }
+  }
+
+  // idToExclude quer dizer que não precisamos monitorar o usuário logado,
+  // não tem necessidade de aparecer seu usuário na lista de usuários
   allUsers(idToExclude: string): Observable<User[]> {
     this.queryRef = this.apollo
       .watchQuery<AllUsersQuery>({
         query: ALL_USERS_QUERY,
         variables: {
           idToExclude
-        }
+        },
+        fetchPolicy: 'network-only'
       });
 
     this.queryRef.subscribeToMore({
@@ -34,7 +54,7 @@ export class UserService {
 
         return {
           ...previous,
-          allUsers: ([newUser, ...previous.allUsers]).sort((uA,uB) => {
+          allUsers: ([newUser, ...previous.allUsers]).sort((uA, uB) => {
             if (uA.name < uB.name) { return -1; }
             if (uA.name > uB.name) { return 1; }
             return 0;

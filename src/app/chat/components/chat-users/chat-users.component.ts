@@ -15,14 +15,13 @@ export class ChatUsersComponent extends BaseComponent<User> implements OnInit {
   users$: Observable<User[]>;
 
   constructor(
-    private userService: UserService,
-    private authService: AuthService
+    private userService: UserService
   ) {
     super();
    }
 
   ngOnInit() {
-    this.users$ = this.userService.allUsers(this.authService.authUser.id);
+    this.users$ = this.userService.users$;
   }
 
 }
