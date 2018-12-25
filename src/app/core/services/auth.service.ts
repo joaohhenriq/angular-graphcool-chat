@@ -139,7 +139,7 @@ export class AuthService {
           isAuthenticated: user !== null
         };
       }),
-      mergeMap(authData => (authData.isAuthenticated) ? of(authData): throwError(new Error('Invalid token')))
+      mergeMap(authData => (authData.isAuthenticated) ? of(authData) : throwError(new Error('Invalid token')))
     );
   }
 
