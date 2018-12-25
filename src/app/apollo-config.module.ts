@@ -8,7 +8,7 @@ import {InMemoryCache} from 'apollo-cache-inmemory';
 import { environment } from 'src/environments/environment';
 import { onError } from 'apollo-link-error';
 import { ApolloLink, Operation } from 'apollo-link';
-import { persistCache } from 'apollo-cache-persist';
+import { persistCache, CachePersistor } from 'apollo-cache-persist';
 import { WebSocketLink } from 'apollo-link-ws';
 import { getOperationAST } from 'graphql';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
@@ -23,6 +23,7 @@ import { SubscriptionClient } from 'subscriptions-transport-ws';
 export class ApolloConfigModule {
 
   private subscriptionClient: SubscriptionClient;
+  cachePersistor: CachePersistor<any>;
 
   constructor(
     private apollo: Apollo,
@@ -70,11 +71,9 @@ export class ApolloConfigModule {
 
     const cache = new InMemoryCache();
 
-    persistCache({
-      cache: cache,
+    this.cachePersistor = new CachePersistor({
+      cache,
       storage: window.localStorage
-    }).catch (err => {
-      console.log('Erro ao persistir o cache: ', err);
     });
 
     apollo.create({
