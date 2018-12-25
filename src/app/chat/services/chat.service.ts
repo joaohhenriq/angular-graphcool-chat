@@ -3,7 +3,14 @@ import { Chat } from './../models/chat.model';
 import { Message } from './../models/message.model';
 import { Router, RouterEvent, NavigationEnd } from '@angular/router';
 import { DataProxy } from 'apollo-cache';
-import { AllChatsQuery, USER_CHATS_QUERY, ChatQuery, CHAT_BY_ID_OR_BY_USERS_QUERY, CREATE_PRIVATE_CHAT_MUTATION, USER_CHATS_SUBSCRIPTION } from './chat.graphql';
+import {
+          AllChatsQuery,
+          USER_CHATS_QUERY,
+          ChatQuery,
+          CHAT_BY_ID_OR_BY_USERS_QUERY,
+          CREATE_PRIVATE_CHAT_MUTATION,
+          USER_CHATS_SUBSCRIPTION
+        } from './chat.graphql';
 import { AuthService } from './../../core/services/auth.service';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Injectable } from '@angular/core';
@@ -31,13 +38,21 @@ export class ChatService {
     if (!this.chats$) {
       this.chats$ = this.getUserChats();
       this.subscriptions.push(this.chats$.subscribe());
-      this.router.events.subscribe((event: RouterEvent) => {
-        if (event instanceof NavigationEnd && !this.router.url.includes('chat')) {
-          this.onDestroy();
-          this.userService.stopUsersMonitoring();
-        }
-      });
+      this.subscriptions.push(
+        this.router.events.subscribe((event: RouterEvent) => {
+          if (event instanceof NavigationEnd && !this.router.url.includes('chat')) {
+            this.stopsChatsMonitoring();
+            this.userService.stopUsersMonitoring();
+          }
+        })
+      );
     }
+  }
+
+  private stopsChatsMonitoring(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
+    this.subscriptions = [];
+    this.chats$ = null;
   }
 
   getUserChats(): Observable<Chat[]> {
@@ -45,7 +60,8 @@ export class ChatService {
       query: USER_CHATS_QUERY,
       variables: {
         loggedUserId: this.authService.authUser.id
-      }
+      },
+      fetchPolicy: 'network-only'
     });
 
     this.queryRef.subscribeToMore({
@@ -201,10 +217,5 @@ export class ChatService {
     }).pipe(
       map(res => res.data.createChat)
     );
-  }
-
-  private onDestroy(): void {
-    this.subscriptions.forEach(s => s.unsubscribe());
-    this.subscriptions = [];
   }
 }
