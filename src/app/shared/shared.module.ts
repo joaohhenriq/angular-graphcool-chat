@@ -12,7 +12,8 @@ import { MatCardModule,
          MatIconModule,
          MatLineModule,
          MatSidenavModule,
-         MatTabsModule} from '@angular/material';
+         MatTabsModule,
+         MatMenuModule} from '@angular/material';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NoRecordComponent } from './components/no-record/no-record.component';
 import { AvatarComponent } from './components/avatar/avatar.component';
@@ -40,6 +41,7 @@ import { FromNowPipe } from './pipes/from-now.pipe';
     MatProgressSpinnerModule,
     MatSlideToggleModule,
     FormsModule,
+    MatMenuModule,
     NoRecordComponent,
     AvatarComponent,
     FromNowPipe
