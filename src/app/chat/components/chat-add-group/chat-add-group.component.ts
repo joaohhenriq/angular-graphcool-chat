@@ -35,6 +35,10 @@ export class ChatAddGroupComponent implements OnInit {
   get title(): FormControl { return <FormControl>this.newGroupForm.get('title'); }
   get members(): FormArray { return <FormArray>this.newGroupForm.get('members'); }
 
+  addMember(user: User): void {
+    this.members.push(this.fb.group(user));
+  }
+
   onSubmit(): void {
     console.log(this.newGroupForm.value);
   }
