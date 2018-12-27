@@ -225,8 +225,47 @@ export class ChatService {
     variables.usersIds.push(this.authService.authUser.id);
     return this.apollo.mutate({
       mutation: CREATE_GROUP_MUTATION,
-      variables: variables
+      variables: variables,
+      optimisticResponse: {
+        __typename: 'Mutation',
+        createChat: {
+          __typename: 'Chat',
+          id: '',
+          title: variables.title,
+          cretedAt: new Date().toISOString(),
+          isGroup: true,
+          users: [
+            {
+              __typename: 'User',
+              id: '',
+              name: '',
+              email: '',
+              createdAt: new Date().toISOString()
+            }
+          ],
+          messages: []
+        }
+      },
+      update: (store: DataProxy, {data: { createChat }}) => {
 
+        const userChatsVariables = { loggedUserId: this.authService.authUser.id };
+
+        // lendo query do cache do apollo
+        const userChatsData = store.readQuery<AllChatsQuery>({
+          query: USER_CHATS_QUERY,
+          variables: userChatsVariables
+        });
+
+        // alteramos os dados da query
+        userChatsData.allChats = [createChat, ...userChatsData.allChats];
+
+        // enviamos a query de volta para o cache
+        store.writeQuery({
+          query: USER_CHATS_QUERY,
+          variables: userChatsVariables,
+          data: userChatsData
+        });
+      }
     }).pipe(
       map(res => res.data.createChat)
     );
