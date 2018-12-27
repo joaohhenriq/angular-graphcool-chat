@@ -9,7 +9,8 @@ import {
           ChatQuery,
           CHAT_BY_ID_OR_BY_USERS_QUERY,
           CREATE_PRIVATE_CHAT_MUTATION,
-          USER_CHATS_SUBSCRIPTION
+          USER_CHATS_SUBSCRIPTION,
+          CREATE_GROUP_MUTATION
         } from './chat.graphql';
 import { AuthService } from './../../core/services/auth.service';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -218,4 +219,17 @@ export class ChatService {
       map(res => res.data.createChat)
     );
   }
+
+  createGroup(variables: {title: string, usersIds: string[]}): Observable<Chat> {
+
+    variables.usersIds.push(this.authService.authUser.id);
+    return this.apollo.mutate({
+      mutation: CREATE_GROUP_MUTATION,
+      variables: variables
+
+    }).pipe(
+      map(res => res.data.createChat)
+    );
+  }
 }
+

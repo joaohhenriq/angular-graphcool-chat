@@ -59,7 +59,14 @@ export class ChatAddGroupComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    console.log(this.newGroupForm.value);
+    console.log('Before: ', this.newGroupForm.value);
+
+    const  formValue = Object.assign({
+      title: this.title.value,
+      usersIds: this.members.value.map(m => m.id)
+    });
+
+    console.log('After', formValue);
   }
 
   ngOnDestroy(): void {
