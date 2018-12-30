@@ -225,14 +225,17 @@ export class ChatService {
     variables.usersIds.push(this.authService.authUser.id);
     return this.apollo.mutate({
       mutation: CREATE_GROUP_MUTATION,
-      variables: variables,
+      variables: {
+        ...variables,
+        loggedUserId: this.authService.authUser.id
+      },
       optimisticResponse: {
         __typename: 'Mutation',
         createChat: {
           __typename: 'Chat',
           id: '',
           title: variables.title,
-          cretedAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
           isGroup: true,
           users: [
             {
@@ -240,12 +243,12 @@ export class ChatService {
               id: '',
               name: '',
               email: '',
-              createdAt: new Date().toISOString()
+              createdAt: new Date().toISOString() 
             }
           ],
           messages: []
         }
-      },
+      }, 
       update: (store: DataProxy, {data: { createChat }}) => {
 
         const userChatsVariables = { loggedUserId: this.authService.authUser.id };

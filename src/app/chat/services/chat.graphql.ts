@@ -102,7 +102,7 @@ export const CREATE_PRIVATE_CHAT_MUTATION = gql`
 `;
 
 export const CREATE_GROUP_MUTATION = gql`
-  mutation CreateGroupMutation($title: string!, $usersIds: [ID!]!) {
+  mutation CreateGroupMutation($title: String!, $usersIds: [ID!]!, $loggedUserId: ID!) {
     createChat (
       title: $title,
       usersIds: $usersIds,

@@ -1,10 +1,10 @@
+import { ChatService } from './../../services/chat.service';
 import { UserService } from './../../../core/services/user.service';
-import { Title } from '@angular/platform-browser';
 import { FormGroup, FormBuilder, Validators, FormControl, FormArray } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { User } from 'src/app/core/models/user.model';
 import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chat-add-group',
@@ -19,7 +19,8 @@ export class ChatAddGroupComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private chatService: ChatService
     ) { }
 
     ngOnInit() {
@@ -59,14 +60,15 @@ export class ChatAddGroupComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    console.log('Before: ', this.newGroupForm.value);
-
     const  formValue = Object.assign({
       title: this.title.value,
       usersIds: this.members.value.map(m => m.id)
     });
 
-    console.log('After', formValue);
+    this.chatService.createGroup(formValue)
+      .pipe(
+        take(1)
+      ).subscribe();
   }
 
   ngOnDestroy(): void {
