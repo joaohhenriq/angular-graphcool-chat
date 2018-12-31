@@ -18,11 +18,12 @@ import { Injectable } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { USER_MESSAGES_SUBSCRIPTION, AllMessagesQuery, GET_CHAT_MESSAGES_QUERY } from './message.graphql';
+import { BaseService } from 'src/app/core/services/base.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ChatService {
+export class ChatService extends BaseService {
 
   chats$: Observable<Chat[]>;
   private subscriptions: Subscription[] = [];
@@ -33,7 +34,9 @@ export class ChatService {
     private authService: AuthService,
     private router: Router,
     private userService: UserService
-  ) { }
+  ) {
+    super();
+  }
 
   startChatsMonitoring(): void {
     if (!this.chats$) {
@@ -177,6 +180,7 @@ export class ChatService {
       },
       update: (store: DataProxy, {data: { createChat }}) => {
 
+        /*
         const userChatsVariables = { loggedUserId: this.authService.authUser.id };
 
         // lendo query do cache do apollo
@@ -195,7 +199,18 @@ export class ChatService {
           data: userChatsData
         });
         // todas essa alterações serão observadas pela watchQuery configurada acima
+        */
 
+        this.readAndWriteQuery<Chat>({
+          store: store,
+          newRecord: createChat,
+          query: USER_CHATS_QUERY,
+          queryName: 'allChats',
+          arrayOperation: 'unshift',
+          variables: { loggedUserId: this.authService.authUser.id }
+        });
+
+        /*
         const variables = {
           chatId: targetUserId,
           loggedUserId: this.authService.authUser.id,
@@ -213,6 +228,20 @@ export class ChatService {
           query: CHAT_BY_ID_OR_BY_USERS_QUERY,
           variables,
           data
+        });
+        */
+
+        this.readAndWriteQuery<Chat>({
+          store: store,
+          newRecord: createChat,
+          query: CHAT_BY_ID_OR_BY_USERS_QUERY,
+          queryName: 'allChats',
+          arrayOperation: 'singleRecord',
+          variables: {
+            chatId: targetUserId,
+            loggedUserId: this.authService.authUser.id,
+            targetUserId: targetUserId
+          }
         });
       }
     }).pipe(
@@ -251,6 +280,7 @@ export class ChatService {
       },
       update: (store: DataProxy, {data: { createChat }}) => {
 
+        /*
         const userChatsVariables = { loggedUserId: this.authService.authUser.id };
 
         // lendo query do cache do apollo
@@ -267,6 +297,16 @@ export class ChatService {
           query: USER_CHATS_QUERY,
           variables: userChatsVariables,
           data: userChatsData
+        });
+        */
+
+        this.readAndWriteQuery<Chat>({
+          store: store,
+          newRecord: createChat,
+          query: USER_CHATS_QUERY,
+          queryName: 'allChats',
+          arrayOperation: 'unshift',
+          variables: { loggedUserId: this.authService.authUser.id }
         });
       }
     }).pipe(
