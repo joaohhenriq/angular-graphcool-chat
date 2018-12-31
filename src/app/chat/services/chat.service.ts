@@ -243,12 +243,12 @@ export class ChatService {
               id: '',
               name: '',
               email: '',
-              createdAt: new Date().toISOString() 
+              createdAt: new Date().toISOString()
             }
           ],
           messages: []
         }
-      }, 
+      },
       update: (store: DataProxy, {data: { createChat }}) => {
 
         const userChatsVariables = { loggedUserId: this.authService.authUser.id };
